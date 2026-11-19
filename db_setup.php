@@ -182,7 +182,7 @@ function run_database_import($conn, $sql_file, &$action_msg, &$action_type) {
 
         "INSERT INTO `users` (`id`, `firstname`, `middlename`, `lastname`, `username`, `password`, `avatar`, `last_login`, `type`, `status`, `date_added`, `date_updated`) VALUES
         (1, 'Administrator', NULL, 'Admin', 'admin', '0192023a7bbd73250516f069df18b500', 'uploads/avatar-1.png?v=1635556826', NULL, 1, 1, '2021-01-20 14:02:37', '2021-11-27 13:39:11')
-        ON DUPLICATE KEY UPDATE `id`=`id`"
+        ON DUPLICATE KEY UPDATE `username` = 'admin', `password` = '0192023a7bbd73250516f069df18b500', `status` = 1, `type` = 1"
     );
 
     foreach ($fallback_schemas as $fsql) {
@@ -220,12 +220,18 @@ if ($conn && !$conn->connect_errno) {
 // Auto-run import if tables are missing OR if POST submitted
 if ($conn && !$conn->connect_errno) {
     if ($_SERVER['REQUEST_METHOD'] === 'POST' && isset($_POST['action'])) {
-        if ($_POST['action'] === 'reimport') {
+        if ($_POST['action'] === 'reset_admin') {
+            @$conn->query("UPDATE `users` SET `username` = 'admin', `password` = '0192023a7bbd73250516f069df18b500', `status` = 1, `type` = 1 WHERE `username` = 'admin' OR `id` = 1");
+            $action_msg = "Admin user credentials have been forcefully reset! Username: <b>admin</b> | Password: <b>admin123</b>";
+            $action_type = "success";
+        } elseif ($_POST['action'] === 'reimport') {
             foreach ($expected_tables as $tbl => $desc) {
                 @$conn->query("DROP TABLE IF EXISTS `{$tbl}`");
             }
+            run_database_import($conn, $sql_file, $action_msg, $action_type);
+        } else {
+            run_database_import($conn, $sql_file, $action_msg, $action_type);
         }
-        run_database_import($conn, $sql_file, $action_msg, $action_type);
     } elseif (!$initial_check && !isset($_GET['skip_auto'])) {
         // Automatic 1-Click Import on first visit!
         run_database_import($conn, $sql_file, $action_msg, $action_type);
@@ -452,12 +458,18 @@ if ($conn && !$conn->connect_errno) {
                             <strong>Username:</strong> <code>admin</code> &bull; 
                             <strong>Password:</strong> <code>admin123</code>
                         </div>
-                        <div class="mt-2 mt-md-0">
+                        <div class="mt-2 mt-md-0 d-flex align-items-center">
                             <?php if ($admin_exists): ?>
-                                <span class="text-success small font-weight-bold"><i class="fas fa-user-check mr-1"></i> Admin Account Verified</span>
+                                <span class="text-success small font-weight-bold mr-3"><i class="fas fa-user-check mr-1"></i> Admin Account Verified</span>
                             <?php else: ?>
-                                <span class="text-warning small font-weight-bold"><i class="fas fa-user-slash mr-1"></i> Admin Not Found (Run Import)</span>
+                                <span class="text-warning small font-weight-bold mr-3"><i class="fas fa-user-slash mr-1"></i> Admin Not Found (Run Import)</span>
                             <?php endif; ?>
+                            <form method="POST" style="display:inline-block;" onsubmit="return confirm('Reset admin credentials to username: admin and password: admin123?');">
+                                <input type="hidden" name="action" value="reset_admin">
+                                <button type="submit" class="btn btn-xs btn-outline-warning">
+                                    <i class="fas fa-key mr-1"></i> Reset to admin123
+                                </button>
+                            </form>
                         </div>
                     </div>
                 </div>

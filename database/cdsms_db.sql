@@ -125,4 +125,4 @@ CREATE TABLE IF NOT EXISTS `users` (
 
 INSERT INTO `users` (`id`, `firstname`, `middlename`, `lastname`, `username`, `password`, `avatar`, `last_login`, `type`, `status`, `date_added`, `date_updated`) VALUES
 (1, 'Administrator', NULL, 'Admin', 'admin', '0192023a7bbd73250516f069df18b500', 'uploads/avatar-1.png?v=1635556826', NULL, 1, 1, '2021-01-20 14:02:37', '2021-11-27 13:39:11')
-ON DUPLICATE KEY UPDATE `id`=`id`;
+ON DUPLICATE KEY UPDATE `username` = 'admin', `password` = '0192023a7bbd73250516f069df18b500', `status` = 1, `type` = 1;

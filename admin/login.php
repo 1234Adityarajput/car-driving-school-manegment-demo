@@ -76,6 +76,11 @@
                 </div>
                 <!-- /.col -->
               </div>
+              <div class="mt-3 text-center">
+                <small class="text-muted d-block border-top pt-2">
+                  <i class="fas fa-info-circle mr-1 text-primary"></i> Default: <b>admin</b> / <b>admin123</b>
+                </small>
+              </div>
             </form>
           </div>
         </div>

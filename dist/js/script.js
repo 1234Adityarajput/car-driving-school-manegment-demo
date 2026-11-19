@@ -47,13 +47,21 @@ $(document).ready(function() {
                         location.replace(_base_url_ + 'admin/index.php');
                     } else if (resp.status == 'incorrect') {
                         var _frm = $('#login-frm')
-                        var _msg = "<div class='alert alert-danger text-white err_msg'><i class='fa fa-exclamation-triangle'></i> Incorrect username or password</div>"
+                        var _errMsg = (resp && resp.msg) ? resp.msg : 'Incorrect username or password. Default: admin / admin123';
+                        var _msg = "<div class='alert alert-danger text-white err_msg'><i class='fa fa-exclamation-triangle'></i> " + _errMsg + "</div>"
                         _frm.prepend(_msg)
                         _frm.find('input').addClass('is-invalid')
                         $('[name="username"]').focus()
                     } else if (resp.status == 'notverified') {
                         var _frm = $('#login-frm')
                         var _msg = "<div class='alert alert-danger text-white err_msg'><i class='fa fa-exclamation-triangle'></i> Your Account is not yet verified.</div>"
+                        _frm.prepend(_msg)
+                        _frm.find('input').addClass('is-invalid')
+                        $('[name="username"]').focus()
+                    } else {
+                        var _frm = $('#login-frm')
+                        var _errMsg = (resp && resp.msg) ? resp.msg : 'Login failed. Please check database connection.';
+                        var _msg = "<div class='alert alert-danger text-white err_msg'><i class='fa fa-exclamation-triangle'></i> " + _errMsg + "</div>"
                         _frm.prepend(_msg)
                         _frm.find('input').addClass('is-invalid')
                         $('[name="username"]').focus()
