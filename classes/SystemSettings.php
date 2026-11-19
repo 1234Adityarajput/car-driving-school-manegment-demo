@@ -194,8 +194,13 @@ class SystemSettings extends DBConnection{
 		if(!empty($field)){
 			if(isset($_SESSION['system_info'][$field]))
 				return $_SESSION['system_info'][$field];
-			else
-				return false;
+			$defaults = array(
+				'name' => 'Car Driving School Management System - PHP',
+				'short_name' => 'CDSMS',
+				'logo' => 'uploads/logo-1638498556.png',
+				'cover' => 'uploads/cover-1638495217.png'
+			);
+			return isset($defaults[$field]) ? $defaults[$field] : false;
 		}else{
 			return false;
 		}

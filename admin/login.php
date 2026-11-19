@@ -1,4 +1,15 @@
-<?php require_once('../config.php') ?>
+<?php 
+require_once('../config.php');
+if ($_SERVER['REQUEST_METHOD'] === 'POST' && isset($_POST['username'])) {
+    require_once('../classes/Login.php');
+    $auth = new Login();
+    $login_res = json_decode($auth->login(), true);
+    if ($login_res && $login_res['status'] === 'success') {
+        redirect('admin/index.php');
+        exit;
+    }
+}
+?>
 <!DOCTYPE html>
 <html lang="en" class="" style="height: auto;">
  <?php require_once('inc/header.php') ?>
